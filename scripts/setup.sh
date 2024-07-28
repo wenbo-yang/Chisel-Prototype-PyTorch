@@ -5,7 +5,9 @@ pip install pytest
 pip install torch torchvision torchaudio
 pip install fastapi
 pip install fastapi uvicorn[standard] cryptography
-pip install opencv
+pip install opencv-python
+pip install numpy
+pip install matplotlib
 
 # # add this to .bashrc .bash_profile .zshrc
 # if command -v pyenv 1>/dev/null 2>&1; then

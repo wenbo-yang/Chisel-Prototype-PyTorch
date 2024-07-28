@@ -1,0 +1,6 @@
+# write something here
+python -m venv fastapi-env
+# fastapi-env/Scripts/activate
+source fastapi-env/bin/activate
+
+
