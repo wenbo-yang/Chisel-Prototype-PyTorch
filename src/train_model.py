@@ -2,7 +2,7 @@ import cv2
 import os
 import torch
 from torchvision import transforms
-from torchvision.datasets import ImageFolder
+from torchvision.datasets import ImageFolder, VisionDataset, ImageNet
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from torch.autograd import Variable
 import PIL.Image as Image
+import fs
 
 from lib.binary_mat_utils import convert_image_data_to_one_zero_mat
 
@@ -44,7 +45,7 @@ class SimpleNet(nn.Module):
             nn.MaxPool2d(2, 2)
         )
 
-        self.fc = nn.Linear(8 * 8 * 50, 3)
+        self.fc = nn.Linear(64 * 50, 3)
 
     def forward(self, x):
         x = self.layer1(x)
@@ -54,8 +55,6 @@ class SimpleNet(nn.Module):
         x = self.fc(x)
         return x
 
-
-
 transform = transforms.Compose([transforms.Resize(48),
                                 transforms.Grayscale(),
                                  transforms.ToTensor()])
@@ -63,7 +62,8 @@ transform = transforms.Compose([transforms.Resize(48),
 trainset = ImageFolder('./src/training_data', transform=transform)
 testset = ImageFolder('./src/training_data', transform=transform)
 
-batch_size = 57
+batch_size = 32
+
 trainloader = torch.utils.data.DataLoader(trainset,
                                           batch_size,
                                           shuffle=True)
@@ -81,14 +81,12 @@ images, labels = next(iter(trainloader))
 # plt.imshow(images[0].permute(1, 2, 0))
 # plt.show()
 
-
-
 device = torch.device("cpu")
 net = SimpleNet()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters(), lr=0.001)
 
-num_epochs = 35
+num_epochs = 200
 
 for epoch in range(num_epochs):  # loop over the dataset multiple times
     train_loss = 0
@@ -119,6 +117,8 @@ for epoch in range(num_epochs):  # loop over the dataset multiple times
 
     print("Epoch [{}/{}]: Train loss = {:.4f}, Valid loss = {:.4f}, Train Acc = {:.4f}, Valid Acc = {:.4f}".format(epoch, num_epochs, train_loss/len(trainloader), valid_loss/len(testloader), train_corrects/(len(trainloader) * batch_size), valid_corrects/(len(testloader) * batch_size)))
 
+
+torch.save(net, "./model/model.pt")
 
 test_net = net.eval()
 
