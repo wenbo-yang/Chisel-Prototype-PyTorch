@@ -163,3 +163,4 @@ cython_debug/
 
 # local env
 fastapi-env/
+model/
