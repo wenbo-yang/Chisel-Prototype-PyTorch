@@ -1,0 +1,10 @@
+This folder stores model weight files (.pt).
+
+Model files are NOT tracked by git (*.pt is gitignored).
+Run the setup script for your platform to install dependencies and download models:
+
+  Windows:   .\scripts\setup.ps1
+  macOS:     bash scripts/setup.sh
+
+Models required:
+  - yolov8n-seg.pt   (YOLOv8 nano segmentation, ~6.7 MB)
