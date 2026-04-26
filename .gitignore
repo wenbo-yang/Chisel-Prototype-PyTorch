@@ -164,3 +164,8 @@ cython_debug/
 # local env
 fastapi-env/
 model/
+models/
+
+# Generated test output images
+test/resources/output/
+src/test_data/**/output/
