@@ -164,8 +164,6 @@ cython_debug/
 # local env
 fastapi-env/
 model/
-models/
-!models/this_folder_stores_models.txt
 
 # Generated test output images
 test/resources/output/
