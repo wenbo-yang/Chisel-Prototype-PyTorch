@@ -1,20 +1,48 @@
 # scripts/setup.ps1 — Windows environment setup
 # Usage: .\scripts\setup.ps1
 #
-# Requirements: Python 3.11 must already be installed.
-# Download from https://www.python.org/downloads/
+# Installs Python 3.11 (via winget if not present), dependencies, and downloads models.
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-# --- Python check ----------------------------------------------------
-if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-    Write-Error "Python not found. Install Python 3.11 from https://www.python.org/downloads/ and re-run."
-    exit 1
+$REQUIRED_PYTHON_VERSION = "3.11"
+
+# --- Python check & install ------------------------------------------
+function Get-PythonVersion {
+    try {
+        $v = python --version 2>&1
+        if ($v -match "Python (\d+\.\d+)") { return $Matches[1] }
+    } catch {}
+    return $null
 }
 
-$pyVersion = python --version
-Write-Host "Using $pyVersion"
+$installedVersion = Get-PythonVersion
+
+if (-not $installedVersion) {
+    Write-Host "Python not found. Installing Python $REQUIRED_PYTHON_VERSION via winget..."
+    if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+        Write-Error "winget not available. Install Python $REQUIRED_PYTHON_VERSION manually from https://www.python.org/downloads/ and re-run."
+        exit 1
+    }
+    winget install --id Python.Python.3.11 --source winget --accept-source-agreements --accept-package-agreements
+    # Refresh PATH so python is available in this session
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" +
+                [System.Environment]::GetEnvironmentVariable("Path","User")
+    $installedVersion = Get-PythonVersion
+    if (-not $installedVersion) {
+        Write-Error "Python installation succeeded but 'python' is still not on PATH. Open a new terminal and re-run."
+        exit 1
+    }
+}
+
+$major, $minor = $installedVersion.Split(".")
+if ([int]$major -lt 3 -or ([int]$major -eq 3 -and [int]$minor -lt 11)) {
+    Write-Warning "Python $installedVersion found but $REQUIRED_PYTHON_VERSION+ is recommended."
+    Write-Warning "Install Python $REQUIRED_PYTHON_VERSION from https://www.python.org/downloads/ for best compatibility."
+}
+
+Write-Host "Using Python $installedVersion"
 
 # --- Python dependencies ---------------------------------------------
 Write-Host "`nInstalling dependencies..."
