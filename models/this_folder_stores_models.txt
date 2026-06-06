@@ -4,7 +4,10 @@ Model files are NOT tracked by git (*.pt is gitignored).
 Run the setup script for your platform to install dependencies and download models:
 
   Windows:   .\scripts\setup.ps1
-  macOS:     bash scripts/setup.sh
+  macOS/Linux: bash scripts/setup.sh
 
-Models required:
-  - yolov8n-seg.pt   (YOLOv8 nano segmentation, ~6.7 MB)
+Models downloaded:
+  - yolov8n-seg.pt    (YOLOv8 Nano segmentation, ~7 MB) - Fast, real-time applications
+  - yolov8x-seg.pt    (YOLOv8 Extra-Large segmentation, ~137 MB) - High accuracy
+
+Both models use the COCO dataset (80 object classes) for instance segmentation.

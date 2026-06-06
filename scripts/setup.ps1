@@ -65,15 +65,33 @@ python - @"
 from ultralytics import YOLO
 import shutil, pathlib, os
 
-dest = pathlib.Path(r'$($modelsDir.Replace("\","\\"))\yolov8n-seg.pt')
-if dest.exists():
-    print(f'Model already exists: {dest}')
+# Download YOLOv8 Nano segmentation model
+dest_nano = pathlib.Path(r'$($modelsDir.Replace("\","\\"))\yolov8n-seg.pt')
+if dest_nano.exists():
+    print(f'✓ Nano model already exists: {dest_nano}')
 else:
+    print('Downloading YOLOv8 Nano segmentation model...')
     model = YOLO('yolov8n-seg.pt')   # downloads to cwd
     src = pathlib.Path('yolov8n-seg.pt')
     if src.exists():
-        shutil.move(str(src), str(dest))
-    print(f'Model saved to {dest}')
+        shutil.move(str(src), str(dest_nano))
+    print(f'✓ Nano model saved to {dest_nano}')
+
+# Download YOLOv8 Extra-Large segmentation model
+dest_large = pathlib.Path(r'$($modelsDir.Replace("\","\\"))\yolov8x-seg.pt')
+if dest_large.exists():
+    print(f'✓ Extra-Large model already exists: {dest_large}')
+else:
+    print('Downloading YOLOv8 Extra-Large segmentation model (137 MB)...')
+    model = YOLO('yolov8x-seg.pt')   # downloads to cwd
+    src = pathlib.Path('yolov8x-seg.pt')
+    if src.exists():
+        shutil.move(str(src), str(dest_large))
+    print(f'✓ Extra-Large model saved to {dest_large}')
 "@
 
-Write-Host "`nSetup complete. Run tests with: pytest test/ -v"
+Write-Host "`nSetup complete!`n"
+Write-Host "Models available:"
+Write-Host "  - YOLOv8 Nano (7 MB):        models/yolov8n-seg.pt"
+Write-Host "  - YOLOv8 Extra-Large (137 MB): models/yolov8x-seg.pt"
+Write-Host "`nRun tests with: pytest test/ -v"

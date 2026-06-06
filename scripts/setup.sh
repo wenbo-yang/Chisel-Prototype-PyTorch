@@ -40,12 +40,35 @@ mkdir -p "$MODELS_DIR"
 python - <<'EOF'
 from ultralytics import YOLO
 import shutil, pathlib
-model = YOLO('yolov8n-seg.pt')   # downloads to cwd if not present
-dest = pathlib.Path('models/yolov8n-seg.pt')
-if not dest.exists():
-    shutil.move('yolov8n-seg.pt', dest)
-print(f'Model saved to {dest}')
+
+# Download YOLOv8 Nano segmentation model
+dest_nano = pathlib.Path('models/yolov8n-seg.pt')
+if dest_nano.exists():
+    print(f'✓ Nano model already exists: {dest_nano}')
+else:
+    print('Downloading YOLOv8 Nano segmentation model...')
+    model = YOLO('yolov8n-seg.pt')   # downloads to cwd if not present
+    if pathlib.Path('yolov8n-seg.pt').exists():
+        shutil.move('yolov8n-seg.pt', dest_nano)
+    print(f'✓ Nano model saved to {dest_nano}')
+
+# Download YOLOv8 Extra-Large segmentation model
+dest_large = pathlib.Path('models/yolov8x-seg.pt')
+if dest_large.exists():
+    print(f'✓ Extra-Large model already exists: {dest_large}')
+else:
+    print('Downloading YOLOv8 Extra-Large segmentation model (137 MB)...')
+    model = YOLO('yolov8x-seg.pt')   # downloads to cwd if not present
+    if pathlib.Path('yolov8x-seg.pt').exists():
+        shutil.move('yolov8x-seg.pt', dest_large)
+    print(f'✓ Extra-Large model saved to {dest_large}')
 EOF
 
 echo ""
-echo "Setup complete. Run tests with: pytest test/ -v"
+echo "Setup complete!"
+echo ""
+echo "Models available:"
+echo "  - YOLOv8 Nano (7 MB):          models/yolov8n-seg.pt"
+echo "  - YOLOv8 Extra-Large (137 MB):  models/yolov8x-seg.pt"
+echo ""
+echo "Run tests with: pytest test/ -v"
